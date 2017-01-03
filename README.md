@@ -1,51 +1,21 @@
 # AndroidEssentials2
 
-- Go to Firebase and in your App Console page Go to Authentication and enable Google Login.
-- Follow all Steps correctly as mentioned in firebase docs for google sign-in
-- Add the given dependencies and sync gradle
-- Add SHA-1 fingerprint to your project in Firebase console
-- Add Google Sign in button in UI and Get reference for the same (Normal Button wont Work)
-- Just copy paste everything from Documentation and try to solve all errors
-- Copy Paste Configure Google Sign in code to onCreate() and fix imports
-- Add the signIn() method and create an integer for the Auth as RC_SIGN_IN=1
-- Create GoogleApiClient object that is used in the signIn() and reference as :
-
-//Most important part for google sign in: 
-
-mGoogleApiClient=new GoogleApiClient.Builder(getApplicationContext())
-                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Toast.makeText(MainActivity.this, "Connection Error", Toast.LENGTH_LONG).show();
-                    }
-                })
-                .addApi(Auth.GOOGLE_SIGN_IN_API,gso)   
-                .build();
-
-- Now add onActivityResult Method and fix all errors
-- Now add the firebaseAuthWithGoogle Method 
-- Add FirebaseAuthentication object mAuth and reference as 
-        mAuth=FirebaseAuth.getInstance();
-- Add the TAG String to anything
-- This completes Google Sign in, but to redirect to another page :
-
-- Create the page with a logout button where redirection is done.
-- Create an FirebaseAuth.AuthStateListener and reference as:
-
-mAuthListener=new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser()!=null)
-                {
-                    startActivity(new Intent(MainActivity.this,AccountActivity.class));
-                }
-            }
-        };
-
-- Override onStart and add mAuth.addAuthStateListener(mAuthListener);
-- In the Logout Activity add FirebaseAuth object and in the onClick of button add FirebaseAuthobject.signOut();
-- To redirect after signing out add AuthStateListener as above and check currentuser == null
-- Override onStart similarly.
-- For getting all details of a user Just create a FirebaseUser object and reference it as:  
-		user=mAuth.getCurrentUser();
-- All methods to fetch details for the user is now available.
+- Create a UI with only a button and Textview.
+- Initialize the button and textview
+- Add a LocationManager and LocationListener Object
+- Initialize LocationManager to :
+	locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+- Now add the Listener and override all methods in it
+- Create a method to handle the button click event and add the Following Code:
+	locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER,5000,0, locationListener);
+  1st parameter - provider (Can be GPS or Network) - GPS is slower as compared to network
+  2nd parameter - minTime (Time for refreshing the location in milliseconds)
+  3rd parameter - minDistance (Minimum distance after which location is updated) - If 0 is given then location is updated according to time
+  4th parameter - locationListener (The listener for location)
+- ACCESS_FINE_LOCATION and ACCESS_COARSE_LOCATION is to be declared in manifest
+- In onLocationChanged update UI changes like adding Latitude and Longitude to textview using: 
+ location.getLatitude() and location.getLongitude()
+- In the onProviderDisabled add intent to go to enable gps when it is off as follows:
+	Intent it = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                startActivity(it);
+- Now just add the button click method in the onCreate and run the app.
